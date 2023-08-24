@@ -1,0 +1,22 @@
+# Arquivos temporários e caches
+*.log
+*.swo
+*.swp
+*.cache
+
+# Diretórios específicos do Composer
+vendor/
+
+# Arquivos e diretórios específicos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos sensíveis
+.env
+
+# Arquivos e diretórios gerados pelo IDE
+.idea/
+.vscode/
+
+# Arquivos específicos do projeto que podem precisar ser ignorados
+# (adicione qualquer outro arquivo ou diretório específico do projeto que você deseja ignorar)

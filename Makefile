@@ -13,7 +13,7 @@ help: ## Exibe essa ajuda
 	@echo "  make test-class class=YourClass   # Executa testes em 'YourClass'"
 	@echo "  make composer-install-dev         # Instala as dependências do Composer incluindo as de desenvolvimento"
 
-up: ## Inicia os contêineres
+up: composer-install ## Inicia os contêineres
 	$(DC) up -d
 
 down: ## Para e remove os contêineres
