@@ -1,0 +1,36 @@
+@startuml Builder
+    skinparam classAttributeIconSize 0
+    
+    class Director {
+        +Director(builder : Builder)
+    }
+
+    interface Builder <<interface>> {
+        +buildPartA()
+        +buildPartB()
+        +getResult() : Product
+    }
+
+    class ConcreteBuilder {
+        +buildPartA()
+        +buildPartB()
+        +getResult() : Product
+    }
+    
+    class Product {
+        -partA : PartA
+        -partB : PartB
+    }
+
+    class PartA {
+    }
+
+    class PartB {
+    }
+    
+    Director o-- Builder
+    Builder <|-- ConcreteBuilder
+    Builder ..> Product : builds
+    note right of Director : Builder.buildPart()
+    note right of Builder : Define etapas para construir o produto
+@enduml

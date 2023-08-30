@@ -1,0 +1,22 @@
+@startuml FactoryMethod
+    skinparam classAttributeIconSize 0
+    
+    interface Creator <<inerface>> {
+        +factoryMethod() : Product
+    }
+
+    class ConcreteCreator {
+        +factoryMethod() : Product
+    }
+
+    interface Product <<interface>> {
+    }
+
+    class ConcreteProduct {
+    }
+
+    Creator <|.. ConcreteCreator
+    Product <|.. ConcreteProduct
+    Creator ..> Product : Creates
+    note right of Creator::FactoryMethod : Método de fábrica
+@enduml

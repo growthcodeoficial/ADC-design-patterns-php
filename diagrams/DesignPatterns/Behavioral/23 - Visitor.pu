@@ -1,0 +1,36 @@
+@startuml VisitorComplete
+    skinparam classAttributeIconSize 0
+
+    interface Visitor <<interface>> {
+        +visitConcreteElementA(element : ConcreteElementA) : void
+        +visitConcreteElementB(element : ConcreteElementB) : void
+    }
+
+    class ConcreteVisitor1 {
+        +visitConcreteElementA(element : ConcreteElementA) : void
+        +visitConcreteElementB(element : ConcreteElementB) : void
+    }
+
+    interface Element <<interface>> {
+        +accept(visitor : Visitor) : void
+    }
+
+    class ConcreteElementA {
+        +accept(visitor : Visitor) : void
+    }
+
+    class ConcreteElementB {
+        +accept(visitor : Visitor) : void
+    }
+
+    class Client {
+        +executeOperations() : void
+    }
+
+    Visitor <|.. ConcreteVisitor1
+    Element <|.. ConcreteElementA
+    Element <|.. ConcreteElementB
+    Client --> Element : uses
+    Client --> Visitor : uses
+    note right of Visitor : Visita elementos na estrutura do objeto
+@enduml

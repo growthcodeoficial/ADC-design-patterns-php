@@ -1,0 +1,25 @@
+@startuml Facade
+    skinparam classAttributeIconSize 0
+    
+    class Client {
+    }
+        
+    class Facade {
+        +operation1() : void
+        +operation2() : void
+    }
+
+    class SubsystemClass1 {
+        +operationX() : void
+    }
+
+    class SubsystemClass2 {
+        +operationY() : void
+    }
+    
+    Facade ..> SubsystemClass1 : uses
+    Facade ..> SubsystemClass2 : uses
+    Client --> Facade
+
+    note right of Facade : Unifica a interface para o subsistema
+@enduml

@@ -1,0 +1,53 @@
+@startuml AbstractFactory
+    skinparam classAttributeIconSize 0
+
+    interface AbstractFactory <<interface>> {
+        +createProductA() : AbstractProductA
+        +createProductB() : AbstractProductB
+    }
+
+    class ConcreteFactory1 {
+        +createProductA() : AbstractProductA
+        +createProductB() : AbstractProductB
+    }
+
+    class ConcreteFactory2 {
+        +createProductA() : AbstractProductA
+        +createProductB() : AbstractProductB
+    }
+
+    interface AbstractProductA <<interface>> {
+    }
+
+    interface AbstractProductB <<interface>> {
+    }
+
+    class ConcreteProductA1 {
+    }
+
+    class ConcreteProductA2 {
+    }
+
+    class ConcreteProductB1 {
+    }
+
+    class ConcreteProductB2 {
+    }
+
+    class Client {
+        -factory : AbstractFactory
+    }
+
+    AbstractFactory <|.. ConcreteFactory1
+    AbstractFactory <|.. ConcreteFactory2
+    AbstractProductA <|.. ConcreteProductA1
+    AbstractProductA <|.. ConcreteProductA2
+    AbstractProductB <|.. ConcreteProductB1
+    AbstractProductB <|.. ConcreteProductB2
+
+    AbstractFactory ..> AbstractProductA : Creates
+    AbstractFactory ..> AbstractProductB : Creates
+
+    Client -> AbstractFactory : Uses
+    note right of AbstractFactory : Métodos de fábrica para diferentes produtos
+@enduml

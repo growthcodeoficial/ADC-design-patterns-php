@@ -1,0 +1,10 @@
+@startuml Singleton
+    skinparam classAttributeIconSize 0
+    class Singleton {
+        -static instance : Singleton
+        -Singleton()
+        +static getInstance() : Singleton
+    }
+    note right of Singleton::getInstance : Retorna a instância única
+    Singleton ..> Singleton
+@enduml

@@ -1,0 +1,31 @@
+@startuml InterpreterWithClient
+    skinparam classAttributeIconSize 0
+
+    abstract class AbstractExpression <<abstract>> {
+        +interpret(context : Context) : void
+    }
+
+    class TerminalExpression {
+        +interpret(context : Context) : void
+    }
+
+    class NonTerminalExpression {
+        +interpret(context : Context) : void
+    }
+
+    class Context {
+        -input : String
+        -output : String
+    }
+    
+    class Client {
+        +buildAndInterpret() : void
+    }
+
+    AbstractExpression <|-- TerminalExpression
+    AbstractExpression <|-- NonTerminalExpression
+    NonTerminalExpression o--> AbstractExpression
+    Client -> AbstractExpression
+    Client -> Context
+    note right of AbstractExpression : Interpreta o contexto
+@enduml

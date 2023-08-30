@@ -1,0 +1,16 @@
+@startuml Prototype
+    skinparam classAttributeIconSize 0
+    interface Prototype <<interface>> {
+        +clone() : Prototype
+    }
+    class ConcretePrototype {
+        +clone() : Prototype
+    }
+    class Client {
+        -prototype : Prototype
+        +operation() : void
+    }
+    Prototype <|.. ConcretePrototype
+    Client ..> Prototype : uses >
+    note right of Prototype::Clone : Cria uma cópia do objeto
+@enduml

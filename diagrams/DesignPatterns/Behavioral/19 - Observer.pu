@@ -1,0 +1,28 @@
+@startuml Observer
+    skinparam classAttributeIconSize 0
+
+    interface Subject <<interface>> {
+        +attach(observer : Observer) : void
+        +detach(observer : Observer) : void
+        +notify() : void
+    }
+
+    class ConcreteSubject {
+        +notify() : void
+        -state : int
+    }
+
+    interface Observer <<interface>> {
+        +update() : void
+    }
+    
+    class ConcreteObserver {
+        +update() : void
+        -subject : ConcreteSubject
+    }
+    Subject <|.. ConcreteSubject
+    Observer <|.. ConcreteObserver
+    Subject -> Observer : notifies
+    ConcreteObserver --> ConcreteSubject : observes
+    note right of ConcreteSubject : Notifica observadores quando o estado muda
+@enduml

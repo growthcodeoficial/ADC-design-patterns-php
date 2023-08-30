@@ -1,0 +1,36 @@
+@startuml MediatorWithClient
+    skinparam classAttributeIconSize 0
+
+    interface Mediator <<interface>> {
+        +send(message : String, colleague : Colleague) : void
+    }
+
+    class ConcreteMediator {
+        +send(message : String, colleague : Colleague) : void
+    }
+    
+    abstract class Colleague <<abstract>>{
+        -mediator : Mediator
+    }
+    
+    class ConcreteColleague1 {
+        -mediator : Mediator
+    }
+    
+    class ConcreteColleague2 {
+        -mediator : Mediator
+    }
+
+    class Client {
+        +InitiateCommunication() : void
+    }
+
+    Mediator <|.. ConcreteMediator
+    Colleague -> Mediator : communicates
+    Colleague <|-- ConcreteColleague1
+    Colleague <|-- ConcreteColleague2
+    Client -> ConcreteMediator : uses
+    Client -> ConcreteColleague1 : uses
+    Client -> ConcreteColleague2 : uses
+    note right of Mediator : Facilita a comunicação entre colegas
+@enduml

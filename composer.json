@@ -1,10 +1,35 @@
 {
+  "name": "growthcode/design-patterns-with-php",
+  "description": "A project for demonstrating design patterns using PHP",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Walmir Silva",
+      "email": "growthcodeoficial@gmail.com"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "GrowthCode\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "GrowthCode\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "8.2.*"
+  },
   "require-dev": {
-    "phpunit/phpunit": "10.3.2"
-  }
+    "phpunit/phpunit": "^10.0"
+  },
+  "repositories": [],
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
 }

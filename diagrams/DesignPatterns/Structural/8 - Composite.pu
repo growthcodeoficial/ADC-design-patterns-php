@@ -1,0 +1,23 @@
+@startuml Composite
+    skinparam classAttributeIconSize 0
+    
+    interface Component <<interface>> {
+        +operation() : void
+    }
+
+    class Leaf {
+        +operation() : void
+    }
+
+    class Composite {
+        +operation() : void
+        +add(c : Component) : void
+        +remove(c : Component) : void
+        +getChild(indice: int)
+    }
+    
+    Component <|-- Leaf
+    Component <|-- Composite
+    Composite o.. Component : contains
+    note right of Composite : Contém componentes filhos
+@enduml

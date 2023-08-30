@@ -1,0 +1,25 @@
+@startuml Strategy
+    skinparam classAttributeIconSize 0
+
+    interface Strategy <<interface>> {
+        +algorithmInterface() : void
+    }
+
+    class ConcreteStrategyA {
+        +algorithmInterface() : void
+    }
+
+    class ConcreteStrategyB {
+        +algorithmInterface() : void
+    }
+
+    class Context {
+        +Context(strategy : Strategy)
+        +contextInterface() : void
+    }
+
+    Strategy <|.. ConcreteStrategyA
+    Strategy <|.. ConcreteStrategyB
+    Context o-- Strategy
+    note right of Strategy : Define uma família de algoritmos
+@enduml
