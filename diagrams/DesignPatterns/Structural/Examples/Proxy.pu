@@ -1,0 +1,30 @@
+@startuml ProxyWithClient
+    skinparam classAttributeIconSize 0
+  
+    ' Interfaces
+    interface Treasure <<interface>> {
+        + open(): string
+    }
+
+    ' Classes
+    class RealTreasure {
+        + open(): string
+    }
+
+
+    class TreasureProxy {
+        - realTreasure: Treasure
+        + open(): string
+    }
+
+    class TreasureHunter {
+        - treasure: Treasure
+        + searchTreasure(): string
+    }
+
+    ' Relações
+    Treasure <|.. RealTreasure
+    Treasure <|.. TreasureProxy
+    TreasureProxy ..> RealTreasure
+    TreasureHunter -> Treasure: uses
+@enduml

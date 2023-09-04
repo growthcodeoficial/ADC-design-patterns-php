@@ -1,0 +1,29 @@
+@startuml TemplateMethod
+    skinparam classAttributeIconSize 0
+
+    ' Classe Abstrata
+    abstract class AbstractRecipe {
+        + prepareDish(): void
+        - boilWater(): void
+        - cook(): void
+        - serve(): void
+        {abstract} addPrimaryIngredients(): void
+        {abstract} addSeasonings(): void
+    }
+
+    ' Classes Concretas
+    class PastaRecipe {
+        + addPrimaryIngredients(): void
+        + addSeasonings(): void
+    }
+
+    class RiceRecipe {
+        + addPrimaryIngredients(): void
+        + addSeasonings(): void
+    }
+
+    ' Relacionamentos
+    AbstractRecipe <|-- PastaRecipe
+    AbstractRecipe <|-- RiceRecipe
+
+@enduml

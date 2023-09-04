@@ -1,0 +1,23 @@
+@startuml Prototype
+    skinparam classAttributeIconSize 0
+
+    class Client {
+        -prototype : Prototype
+        +operation() : void
+    }
+    
+
+    interface SculpturePrototype <<interface>> {
+    + clone() : SculpturePrototype
+}
+
+    class ConcreteSculpture {
+        + material : string
+        ---
+        + ConcreteSculpture(material: string) : void
+        + clone() : SculpturePrototype
+    }
+
+    SculpturePrototype <|.. ConcreteSculpture
+     Client ..> SculpturePrototype : uses >
+@enduml

@@ -1,0 +1,35 @@
+@startuml Strategy
+    skinparam classAttributeIconSize 0
+
+    ' Interface
+    interface BattleStrategy <<interface>> {
+        + execute(): string
+    }
+
+    ' Estratégias Concretas
+    class AttackStrategy {
+        + execute(): string
+    }
+
+    class SiegeStrategy {
+        + execute(): string
+    }
+
+    class RetreatStrategy {
+        + execute(): string
+    }
+
+    ' Context
+    class General {
+        - strategy: BattleStrategy
+        ---
+        + setStrategy(strategy: BattleStrategy): void
+        + makeDecision(): string
+    }
+
+    ' Relacionamentos
+    BattleStrategy <|.. AttackStrategy
+    BattleStrategy <|.. SiegeStrategy
+    BattleStrategy <|.. RetreatStrategy
+    General o--> BattleStrategy: usa
+@enduml

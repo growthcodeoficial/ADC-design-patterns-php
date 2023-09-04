@@ -1,0 +1,46 @@
+@startuml VisitorComplete
+    skinparam classAttributeIconSize 0
+
+   ' Interfaces
+    interface TouristAttraction <<interface>> {
+        + accept(Tourist): void
+    }
+
+    interface Tourist <<interface>> {
+        + visitMuseum(Museum): void
+        + visitBeach(Beach): void
+    }
+
+    ' Classes Concretas
+    class Museum {
+        + accept(Tourist): void
+        + admireArt(): string
+    }
+
+    class Beach {
+        + accept(Tourist): void
+        + relax(): string
+    }
+
+    class AdventurousTourist {
+        + visitMuseum(Museum): void
+        + visitBeach(Beach): void
+    }
+
+    ' Cliente
+    class VacationPlanner {
+        - touristAttractions: SplObjectStorage
+        + addAttraction(TouristAttraction): void
+        + removeAttraction(TouristAttraction): void
+        + arrangeTour(Tourist): void
+    }
+
+    ' Relacionamentos
+    TouristAttraction <|.. Museum
+    TouristAttraction <|.. Beach
+    Tourist <|.. AdventurousTourist
+    Museum ..> AdventurousTourist : <<uses>>
+    Beach ..> AdventurousTourist : <<uses>>
+    VacationPlanner --> Tourist : <<uses>>
+    VacationPlanner --> TouristAttraction : <<uses>>
+@enduml

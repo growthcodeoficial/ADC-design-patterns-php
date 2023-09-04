@@ -1,0 +1,36 @@
+@startuml Bridge
+    skinparam classAttributeIconSize 0
+ 
+    ' Interface for DatabaseDriver (Implementation)
+    interface DatabaseDriver <<interface>> {
+        + query(sql: string) : array
+    }
+
+    ' Concrete Implementations
+    class MySqlDriver {
+        + query(sql: string) : array
+    }
+
+    class SqliteDriver {
+        + query(sql: string) : array
+    }
+
+    ' Abstraction
+    class DatabaseBridge {
+        - driver: DatabaseDriver
+        ---
+        + executeQuery(sql: string) : array
+    }
+
+    ' Refined Abstraction
+    class SecureDatabaseBridge {
+        ---
+        + executeSecureQuery(sql: string) : array
+    }
+
+    ' Relationships
+    DatabaseDriver <|.. MySqlDriver
+    DatabaseDriver <|.. SqliteDriver
+    DatabaseBridge ..> DatabaseDriver : uses
+    SecureDatabaseBridge ..|> DatabaseBridge
+@enduml

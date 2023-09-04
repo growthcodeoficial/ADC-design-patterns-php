@@ -18,8 +18,8 @@
         +doSomething() : void
     }
 
-    Subject <|-- RealSubject
-    Subject <|-- Proxy
+    Subject <|.. RealSubject
+    Subject <|.. Proxy
     Proxy ..> RealSubject : controls
     Client -> Subject : uses
     note right of Proxy : Controla o acesso ao RealSubject

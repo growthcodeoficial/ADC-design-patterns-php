@@ -1,0 +1,49 @@
+@startuml InterpreterWithClient
+    skinparam classAttributeIconSize 0
+
+    ' AbstractExpression
+    interface Expression <<interface>> {
+        + interpret(context: ArrayObject): string
+    }
+
+    ' ConcreteExpressions
+    class Word {
+        - value: string
+        ---
+        + interpret(context: ArrayObject): string
+    }
+
+    class Sentence {
+        - words: ArrayObject
+        ---
+        + interpret(context: ArrayObject): string
+    }
+
+    class Concat {
+        - sentences: ArrayObject
+        ---
+        + interpret(context: ArrayObject): string
+    }
+
+    ' Context
+    class Context {
+        + set(key: string, value: string): void
+        + get(key: string): string?
+    }
+
+    ' Client
+    class LanguageProcessor {
+        + execute(expression: Expression, context: Context): string
+    }
+
+    ' Relationships
+    Expression <|.. Word
+    Expression <|.. Sentence
+    Expression <|.. Concat
+
+    LanguageProcessor --> Expression: uses
+    Context <-up LanguageProcessor: uses
+    ' Context <-- Expression: uses
+    ' NonTerminalExpression o--> AbstractExpression
+    
+@enduml

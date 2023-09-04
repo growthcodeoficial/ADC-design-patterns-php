@@ -1,0 +1,40 @@
+@startuml AbstractFactory
+    skinparam classAttributeIconSize 0
+
+    ' Interfaces
+    interface Flower <<interface>> {
+        + smell() : string
+    }
+
+    interface Tree <<interface>> {
+        + height() : string
+    }
+
+    ' Implementations
+    class Rose {
+        + smell() : string
+    }
+
+    class Oak {
+        + height() : string
+    }
+
+    ' Abstract Factory Interface
+    interface BotanicalFactory <<interface>> {
+        + createFlower() : Flower
+        + createTree() : Tree
+    }
+
+    ' Concrete Factory
+    class EuropeanGardenFactory {
+        + createFlower() : Flower
+        + createTree() : Tree
+    }
+
+    ' Relationships
+    Flower <|.. Rose
+    Tree <|.. Oak
+    BotanicalFactory <|.. EuropeanGardenFactory
+    BotanicalFactory ..> Flower : creates >
+    BotanicalFactory ..> Tree : creates >
+@enduml

@@ -32,5 +32,5 @@
     Client -> ConcreteMediator : uses
     Client -> ConcreteColleague1 : uses
     Client -> ConcreteColleague2 : uses
-    note right of Mediator : Facilita a comunicação entre colegas
+    note top of Mediator : Facilita a comunicação entre colegas
 @enduml

@@ -1,0 +1,50 @@
+@startuml Iterator
+    skinparam classAttributeIconSize 0
+
+    ' Interface for Aggregate
+    interface RoomAggregate <<interface>> {
+        + getIterator(): RuinRoomIterator
+    }
+
+    ' Concrete Aggregate
+    class Ruin {
+        - rooms: array
+        ---
+        + getIterator(): RuinRoomIterator
+    }
+
+    ' Iterator
+    interface Iterator <<interface>> {
+        + current(): string
+        + next(): void
+        + key(): int
+        + valid(): bool
+        + rewind(): void
+    }
+
+    ' Concrete Iterator
+    class RuinRoomIterator {
+        - rooms: array
+        - position: int
+        ---
+        + current(): string
+        + next(): void
+        + key(): int
+        + valid(): bool
+        + rewind(): void
+    }
+
+    ' Client
+    class Archaeologist {
+        - ruin: Ruin
+        ---
+        + explore(): void
+    }
+
+    ' Relationships
+    RoomAggregate <|.. Ruin
+    Iterator <|.. RuinRoomIterator
+    RuinRoomIterator <-- Ruin
+    Archaeologist -> RoomAggregate: uses
+    Archaeologist -> Iterator: uses
+@enduml

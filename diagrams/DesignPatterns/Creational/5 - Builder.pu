@@ -29,7 +29,7 @@
     }
     
     Director o-- Builder
-    Builder <|-- ConcreteBuilder
+    Builder <|.. ConcreteBuilder
     Builder ..> Product : builds
     note right of Director : Builder.buildPart()
     note right of Builder : Define etapas para construir o produto

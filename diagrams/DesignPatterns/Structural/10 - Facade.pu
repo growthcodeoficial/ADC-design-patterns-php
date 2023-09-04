@@ -17,8 +17,8 @@
         +operationY() : void
     }
     
-    Facade ..> SubsystemClass1 : uses
-    Facade ..> SubsystemClass2 : uses
+    Facade *..> SubsystemClass1 : uses
+    Facade *..> SubsystemClass2 : uses
     Client --> Facade
 
     note right of Facade : Unifica a interface para o subsistema

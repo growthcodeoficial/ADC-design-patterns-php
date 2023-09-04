@@ -1,0 +1,35 @@
+@startuml State
+    skinparam classAttributeIconSize 0
+
+    ' Interface
+    interface State {
+        + handle(context: Context): void
+    }
+
+    ' Concrete States
+    class GreenState {
+        + handle(context: Context): void
+    }
+
+    class YellowState {
+        + handle(context: Context): void
+    }
+
+    class RedState {
+        + handle(context: Context): void
+    }
+
+    ' Context
+    class Context {
+        - state: State
+        ---
+        + transitionTo(state: State): void
+        + getState(): State
+    }
+
+    ' Relationships
+    State <|.. GreenState
+    State <|.. YellowState
+    State <|.. RedState
+    Context .> State: uses
+@enduml

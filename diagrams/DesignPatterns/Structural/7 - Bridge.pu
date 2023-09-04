@@ -1,8 +1,8 @@
 @startuml Bridge
     skinparam classAttributeIconSize 0
     
-    class Abstraction {
-        +operation()
+    abstract class Abstraction <<abstrqact>> {
+        + {abstract} operation()
         -implementor : Implementor
     }
 

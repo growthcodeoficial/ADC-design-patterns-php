@@ -1,0 +1,37 @@
+@startuml Observer
+    skinparam classAttributeIconSize 0
+
+  ' Subject (SplSubject)
+    interface SplSubject <<interface>> {
+        + attach(observer: SplObserver): void
+        + detach(observer: SplObserver): void
+        + notify(): void
+    }
+
+    ' Observer (SplObserver)
+    interface SplObserver <<interface>> {
+        + update(subject: SplSubject): void
+    }
+
+    ' ConcreteSubject
+    class Watchtower {
+        - observers: SplObjectStorage
+        - event: string
+        ---
+        + attach(observer: SplObserver): void
+        + detach(observer: SplObserver): void
+        + notify(): void
+        + triggerEvent(event: string): void
+        + getEvent(): string
+    }
+
+    ' ConcreteObserver
+    class Guard {
+        + update(subject: SplSubject): void
+    }
+
+    ' Relationships
+    SplSubject <|.. Watchtower
+    SplObserver <|.. Guard
+    Watchtower "1" -- "0..*" Guard: notifies
+@enduml

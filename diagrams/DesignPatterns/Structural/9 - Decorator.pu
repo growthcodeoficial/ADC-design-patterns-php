@@ -19,7 +19,7 @@
         +addedBehavior() : void
     }
 
-    Component <|-- ConcreteComponent
+    Component <|.. ConcreteComponent
     Component <|.. Decorator
     Decorator <|-- ConcreteDecorator
     Decorator o.. Component : decorates

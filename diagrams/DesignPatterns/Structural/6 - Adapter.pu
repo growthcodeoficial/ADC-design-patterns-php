@@ -1,6 +1,10 @@
 @startuml Adapter
     skinparam classAttributeIconSize 0
     
+    class Cliente {
+        +doSomething() : void
+    }
+
     interface Target {
         +request() : void
     }
@@ -12,7 +16,8 @@
     class Adaptee {
         +specificRequest() : void
     }
-    
+
+    Cliente -right-> Target : uses
     Target <|.. Adapter
     Adapter ..> Adaptee : adapts
     note right of Adapter : Adapta Adaptee para Target

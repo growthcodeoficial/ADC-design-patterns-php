@@ -21,8 +21,8 @@
         +doSomething() : void
     }
 
-    Flyweight <|-- ConcreteFlyweight
-    Flyweight <|-- UnsharedConcreteFlyweight
+    Flyweight <|.. ConcreteFlyweight
+    Flyweight <|.. UnsharedConcreteFlyweight
     FlyweightFactory o--> Flyweight : creates
     Client -> FlyweightFactory : requests
     Client -> ConcreteFlyweight

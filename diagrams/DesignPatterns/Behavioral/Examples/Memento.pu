@@ -1,0 +1,31 @@
+@startuml MementoComplete
+    skinparam classAttributeIconSize 0
+
+    ' Memento
+    class Memory {
+        - state: array
+        ---
+        + getState(): array
+    }
+
+    ' Originator
+    class Person {
+        - memories: array
+        ---
+        + addMemory(memory: string): void
+        + save(): Memory
+        + restore(memory: Memory): void
+    }
+
+    ' Caretaker
+    class MemoryLibrary {
+        - savedMemories: SplStack
+        ---
+        + saveMemory(memory: Memory): void
+        + getLastMemory(): Memory
+    }
+
+    ' Relationships
+    MemoryLibrary o..> Memory: manages
+    Person ..> Memory: creates / restores
+@enduml

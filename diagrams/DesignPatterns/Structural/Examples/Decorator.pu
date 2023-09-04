@@ -1,0 +1,41 @@
+@startuml Decorator
+    skinparam classAttributeIconSize 0
+
+    ' Interface (Component)
+    interface Jewel {
+        + cost(): float
+        + description(): string
+    }
+
+    ' ConcreteComponent
+    class Ring {
+        + cost(): float
+        + description(): string
+    }
+
+    ' Abstract Decorator
+    abstract class JewelDecorator <<abstract>> {
+        - jewel: Jewel
+        ---
+        + cost(): float
+        + description(): string
+    }
+
+    ' ConcreteDecorators
+    class DiamondDecorator {
+        + cost(): float
+        + description(): string
+    }
+
+    class GoldDecorator {
+        + cost(): float
+        + description(): string
+    }
+
+    ' Relationships
+    Jewel <|.. Ring
+    Jewel <|.. JewelDecorator
+    JewelDecorator <|-- DiamondDecorator
+    JewelDecorator <|-- GoldDecorator
+    JewelDecorator o...> Jewel: contains
+@enduml

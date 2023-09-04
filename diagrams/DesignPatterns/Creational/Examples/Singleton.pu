@@ -1,15 +1,23 @@
 @startuml Singleton
     skinparam classAttributeIconSize 0
 
+    class Singleton {
+        -static instance : Singleton
+        -Singleton()
+        +static getInstance() : Singleton
+    }
+    note right of Singleton::getInstance : Retorna a instância única
+    Singleton ..> Singleton
+
+    !define namespace GrowthCode\DesignPatterns\Creational\Singleton
+
     class President {
         - static instance : President
         ---
         - President() : void
         + static getInstance() : President
     }
-    
     note right: Singleton Instance\nPrivate constructor to prevent instantiation.
-    President ..> President
 
 @enduml
 

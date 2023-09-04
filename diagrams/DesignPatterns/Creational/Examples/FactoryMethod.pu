@@ -1,0 +1,35 @@
+@startuml FactoryMethod
+    skinparam classAttributeIconSize 0
+    
+    interface Artist <<interface>> {
+        + perform() : string
+    }
+
+    class Dancer {
+        + perform() : string
+    }
+
+    class Singer {
+        + perform() : string
+    }
+
+    abstract class TalentFactory <<abstract>> {
+        {abstract} + createArtist() : Artist
+        + showPerformance() : string
+    }
+
+    class DanceFactory {
+        + createArtist() : Artist
+    }
+
+    class SingingFactory {
+        + createArtist() : Artist
+    }
+
+    Artist <|.. Dancer
+    Artist <|.. Singer
+    TalentFactory <|-- DanceFactory
+    TalentFactory <|-- SingingFactory
+    TalentFactory ..> Artist : creates >
+
+@enduml

@@ -1,0 +1,44 @@
+@startuml Facade
+    skinparam classAttributeIconSize 0
+    
+    ' Interface (Subsystem)
+    interface InstrumentInterface {
+        + play(): string
+    }
+
+    ' Concrete Implementations of Subsystem
+    class Violin {
+        + play(): string
+    }
+
+    class Trumpet {
+        + play(): string
+    }
+
+    class Drums {
+        + play(): string
+    }
+
+    ' Facade
+    class OrchestraFacade {
+        - instruments: SplObjectStorage
+        ---
+        + addInstrument(InstrumentInterface): void
+        + perform(): string
+    }
+
+    ' Client
+    class OrchestraClient {
+        - orchestra: OrchestraFacade
+        ---
+        + orchestratePerformance(): string
+    }
+
+    ' Relationships
+    InstrumentInterface <|.. Violin
+    InstrumentInterface <|.. Trumpet
+    InstrumentInterface <|.. Drums
+
+    OrchestraFacade ..> InstrumentInterface: uses
+    OrchestraClient -> OrchestraFacade: uses
+@enduml
