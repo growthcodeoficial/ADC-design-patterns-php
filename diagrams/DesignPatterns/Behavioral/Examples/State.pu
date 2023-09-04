@@ -1,35 +1,32 @@
 @startuml State
     skinparam classAttributeIconSize 0
 
-    ' Interface
-    interface State {
-        + handle(context: Context): void
+    interface ChameleonState {
+        +changeColor(chameleon : Chameleon) : void
     }
-
-    ' Concrete States
+    
+    class Chameleon {
+        -state : ChameleonState
+        +changeColor() : void
+    }
+    
     class GreenState {
-        + handle(context: Context): void
+        +changeColor(chameleon : Chameleon) : void
     }
-
-    class YellowState {
-        + handle(context: Context): void
+    
+    class BrownState {
+        +changeColor(chameleon : Chameleon) : void
     }
-
-    class RedState {
-        + handle(context: Context): void
+    
+    class BlueState {
+        +changeColor(chameleon : Chameleon) : void
     }
-
-    ' Context
-    class Context {
-        - state: State
-        ---
-        + transitionTo(state: State): void
-        + getState(): State
-    }
-
-    ' Relationships
-    State <|.. GreenState
-    State <|.. YellowState
-    State <|.. RedState
-    Context .> State: uses
+    
+    ChameleonState <|.. GreenState
+    ChameleonState <|.. BrownState
+    ChameleonState <|.. BlueState
+    
+    Chameleon -> ChameleonState : has-a
+    note right of Chameleon : Context
+    note right of ChameleonState : State
 @enduml
