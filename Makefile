@@ -13,8 +13,9 @@ help: ## Exibe essa ajuda
 	@echo "  make test-class class=YourClass   # Executa testes em 'YourClass'"
 	@echo "  make composer-install-dev         # Instala as dependências do Composer incluindo as de desenvolvimento"
 
-up: composer-install ## Inicia os contêineres
+up:  ## Inicia os contêineres
 	$(DC) up -d
+	@make composer-install
 
 down: ## Para e remove os contêineres
 	$(DC) down
@@ -36,10 +37,10 @@ composer-install-dev: ## Instala as dependências do Composer incluindo as de de
 	$(EXEC_PHP) composer install --dev
 
 test: ## Executa os testes com PHPUnit
-	$(EXEC_PHP) vendor/bin/phpunit
+	$(EXEC_PHP) vendor/bin/phpunit tests --testdox --colors=always --no-results
 
 test-class: ## Executa testes em uma classe específica (usar como make test-class class=<ClassName>)
-	$(EXEC_PHP) vendor/bin/phpunit --filter $(class)
+	$(EXEC_PHP) vendor/bin/phpunit --filter $(class) --testdox --colors=always
 
 bash: ## Acessa o shell do contêiner PHP
 	$(EXEC_PHP) bash
