@@ -8,7 +8,7 @@ use GrowthCode\DesignPatterns\Behavioral\Memento\MemoryLibrary;
 
 final class MementoTest extends TestCase
 {
-    public function testMementoPattern()
+    public function testMementoPattern(): void
     {
         // Passo 1: Inicializar uma nova Pessoa e adicionar memórias
         $person = new Person();
