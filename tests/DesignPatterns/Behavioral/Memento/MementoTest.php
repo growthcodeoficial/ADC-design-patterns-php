@@ -4,35 +4,42 @@ namespace GrowthCode\Tests\DesignPatterns\Behavioral\Memento;
 
 use PHPUnit\Framework\TestCase;
 use GrowthCode\DesignPatterns\Behavioral\Memento\Person;
-use GrowthCode\DesignPatterns\Behavioral\Memento\MemoryLibrary;
+use GrowthCode\DesignPatterns\Behavioral\Memento\Librarian;
 
 final class MementoTest extends TestCase
 {
-    public function testMementoPattern(): void
+    public function testMementoPattern()
     {
-        // Passo 1: Inicializar uma nova Pessoa e adicionar memórias
+        // Initialize the Originator (Person) and Caretaker (Librarian)
         $person = new Person();
-        $person->addMemory('Foi para a escola');
-        $person->addMemory('Aprendeu PHP');
+        $librarian = new Librarian();
 
-        // Passo 2: Salvar o estado atual
-        $memory = $person->save();
+        // Set initial state and save it
+        $person->setState("State 1");
+        $librarian->addMemoryCapsule($person->saveToMemoryCapsule());
 
-        // Passo 3: Inicializar MemoryLibrary e guardar a memória
-        $memoryLibrary = new MemoryLibrary();
-        $memoryLibrary->saveMemory($memory);
+        // Assert initial state without popping it
+        $initialState = $librarian->getMemoryCapsule();
+        $this->assertEquals("State 1", $initialState->getState());
+        $librarian->addMemoryCapsule($initialState);  // Put it back into the stack
 
-        // Passo 4: Modificar as memórias da Pessoa
-        $person->addMemory('Comeu sushi');
+        // Change state and save it
+        $person->setState("State 2");
+        $librarian->addMemoryCapsule($person->saveToMemoryCapsule());
 
-        // Assertivas antes de restaurar
-        $this->assertEquals(['Foi para a escola', 'Aprendeu PHP', 'Comeu sushi'], $person->save()->getState());
+        // Assert new state without popping it
+        $newState = $librarian->getMemoryCapsule();
+        $this->assertEquals("State 2", $newState->getState());
+        $librarian->addMemoryCapsule($newState);  // Put it back into the stack
 
-        // Passo 5: Restaurar o estado original a partir do MemoryLibrary
-        $restoredMemory = $memoryLibrary->getLastMemory();
-        $person->restore($restoredMemory);
+        // Restore previous state
+        $librarian->getMemoryCapsule();  // Remove the latest state (State 2)
+        $restoredMemoryCapsule = $librarian->getMemoryCapsule();  // Now get the initial state (State 1)
+        if ($restoredMemoryCapsule !== null) {
+            $person->restoreFromMemoryCapsule($restoredMemoryCapsule);
+        }
 
-        // Assertivas após restaurar
-        $this->assertEquals(['Foi para a escola', 'Aprendeu PHP'], $person->save()->getState());
+        // Assert restored state
+        $this->assertEquals("State 1", $person->saveToMemoryCapsule()->getState());
     }
 }

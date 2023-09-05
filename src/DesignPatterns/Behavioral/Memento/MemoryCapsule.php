@@ -3,16 +3,16 @@
 namespace GrowthCode\DesignPatterns\Behavioral\Memento;
 
 // Memento
-class Memory
+class MemoryCapsule
 {
-    private array $state;
+    private string $state;
 
-    public function __construct(array $state)
+    public function __construct(string $state)
     {
         $this->state = $state;
     }
 
-    public function getState(): array
+    public function getState(): string
     {
         return $this->state;
     }

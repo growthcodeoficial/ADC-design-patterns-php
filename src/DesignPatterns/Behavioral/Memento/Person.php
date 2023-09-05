@@ -5,20 +5,20 @@ namespace GrowthCode\DesignPatterns\Behavioral\Memento;
 // Originator
 class Person
 {
-    private array $memories = [];
+    private string $state;
 
-    public function addMemory(string $memory): void
+    public function setState(string $state): void
     {
-        $this->memories[] = $memory;
+        $this->state = $state;
     }
 
-    public function save(): Memory
+    public function saveToMemoryCapsule(): MemoryCapsule
     {
-        return new Memory($this->memories);
+        return new MemoryCapsule($this->state);
     }
 
-    public function restore(Memory $memory): void
+    public function restoreFromMemoryCapsule(MemoryCapsule $memoryCapsule): void
     {
-        $this->memories = $memory->getState();
+        $this->state = $memoryCapsule->getState();
     }
 }
