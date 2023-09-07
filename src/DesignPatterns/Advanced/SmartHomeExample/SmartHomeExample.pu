@@ -1,0 +1,71 @@
+@startuml SmartHomeExample
+!define RECTANGLE class
+
+package "GrowthCode\DesignPatterns\Advanced\SmartHomeExample" {
+  RECTANGLE EventListener  <<interface>> {
+    +handle(event: Event): void
+  }
+
+  RECTANGLE Command <<interface>> {
+    +execute(): void
+    +undo(): void
+  }
+
+  RECTANGLE ObjectState {
+    -state: any
+    +getState(): any
+  }
+
+  RECTANGLE EventManager <<singleton>> {
+    -listeners: array
+    -stack: SplStack
+    +getInstance(): EventManager
+    +addListener(eventType: string, listener: EventListener): void
+    +trigger(event: Event): void
+    +pushState(state: ObjectState): void
+    +popState(): ObjectState?
+  }
+
+  RECTANGLE Event {
+    -type: string
+    +getType(): string
+  }
+
+  abstract RECTANGLE SmartDevice <<abstract>> {
+    -status: int
+    {abstract} +modify(): void
+    +getStatus(): int
+  }
+
+  RECTANGLE LightDevice {
+    +modify(): void
+  }
+
+  RECTANGLE ThermostatDevice {
+    +modify(): void
+  }
+
+  RECTANGLE VacationModeListener {
+    -device: SmartDevice
+    -eventManager: EventManager
+    +handle(event: Event): void
+    +execute(): void
+    +undo(): void
+  }
+}
+
+SmartDevice <|-- LightDevice
+SmartDevice <|-- ThermostatDevice
+EventListener <|.. VacationModeListener
+Command <|.. VacationModeListener
+
+VacationModeListener ..> EventManager: uses
+VacationModeListener ..> SmartDevice: uses
+VacationModeListener ..> ObjectState: uses
+
+EventManager ..> EventListener: notifies
+EventManager ..> ObjectState: uses
+EventManager ..> SplStack: uses
+EventManager ..> Event: uses
+
+@enduml
