@@ -1,0 +1,66 @@
+@startuml CombiningPatterns
+
+!define RECTANGLE class
+' left to right direction
+
+package "GrowthCode.DesignPatterns.Creational.CombiningPatterns" {
+
+    package "Entity" {
+        interface "EntityInterface" as EntityInterface <<interface>>
+        abstract class "Entity" as Entity <<abstract>> {
+            +getAttributes(): array
+        }
+        RECTANGLE "UserEntity" as UserEntity
+    }
+
+    package "EntityHelper" {
+        RECTANGLE "SqlQueryBuilder" as SqlQueryBuilder {
+            +{static} buildInsertQuery(tableName, attributes[])
+        }
+    }
+
+    package "Database" {
+        RECTANGLE "DatabaseConnection" as DatabaseConnection {
+            +getInstance(type): DatabaseConnection
+            +executeQuery(query): bool
+        }
+    }
+
+    package "Operations" {
+        RECTANGLE "DatabaseOperations" as DatabaseOperations {
+            +insert(EntityInterface, type: string): bool
+        }
+    }
+
+    package "Repository" {
+        interface "RepositoryInterface" as RepositoryInterface <<interface>>
+        abstract class "Repository" as Repository <<abstract>> {
+            +add(EntityInterface): bool
+        }
+        RECTANGLE "UserRepository" as UserRepository
+    }
+
+    package "Factory" {
+        RECTANGLE "RepositoryFactory" as RepositoryFactory <<abstract>> {
+            +createRepository(DatabaseOperations): RepositoryInterface
+        }
+        RECTANGLE "UserRepositoryFactory" as UserRepositoryFactory
+    }
+}
+
+EntityInterface <|.. Entity
+Entity <|-- UserEntity
+
+DatabaseOperations ..> SqlQueryBuilder : <<uses>>
+DatabaseOperations ..> DatabaseConnection : <<uses>>
+
+Repository ..> DatabaseOperations : <<uses>>
+Repository ..> EntityInterface : <<uses>>
+
+UserRepository --|> Repository
+
+RepositoryFactory ..> RepositoryInterface : <<creates>>
+UserRepositoryFactory --|> RepositoryFactory
+UserRepositoryFactory *-- UserRepository : <<composes>>
+
+@enduml
