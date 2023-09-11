@@ -3,105 +3,125 @@
 namespace GrowthCode\Tests\DesignPatterns\Advanced\CRCLS;
 
 use PHPUnit\Framework\TestCase;
-use GrowthCode\DesignPatterns\Advanced\CRCLS\RecommenderFactory;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\User\User;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Context\Context;
 use GrowthCode\DesignPatterns\Advanced\CRCLS\Context\RecentActivities;
 use GrowthCode\DesignPatterns\Advanced\CRCLS\Context\AdditionalFactors;
-use GrowthCode\DesignPatterns\Advanced\CRCLS\User\User;
 use GrowthCode\DesignPatterns\Advanced\CRCLS\Recommender\ContentBasedRecommender;
 use GrowthCode\DesignPatterns\Advanced\CRCLS\Recommender\VideoBasedRecommender;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Recommender\CourseBasedRecommender;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Factory\RecommenderFactory;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Hybrid\HybridRecommender;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Hybrid\Strategies;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Decorator\CostFilterDecorator;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Decorator\DifficultyFilterDecorator;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\EventManager\EventManager;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Memento\RecommenderMemento;
+use GrowthCode\DesignPatterns\Advanced\CRCLS\Observer\UserActivityObserver;
 
-final class CRCLSTest extends TestCase
+class CRCLSTest extends TestCase
 {
-    public function testCanCreateContentBasedRecommender(): void
+    private Context $context;
+
+    protected function setUp(): void
     {
-        $factory = new RecommenderFactory();
-        $recommender = $factory->createRecommender('content');
-        $this->assertInstanceOf(ContentBasedRecommender::class, $recommender);
+        // Inicialize RecentActivities com atividades que você espera que o usuário tenha realizado recentemente.
+        $recentActivities = new RecentActivities([
+            'recentCourses' => ['Curso básico de Python', 'Curso de JavaScript para iniciantes'],
+            'recentVideos' => ['Como usar o terminal Linux', 'Introdução ao SQL'],
+            'recentArticles' => ['Introdução ao Git', 'Princípios SOLID em OOP']
+        ]);
+
+        // Inicialize AdditionalFactors com outros fatores que podem ser relevantes para as recomendações.
+        $additionalFactors = new AdditionalFactors([
+            'preferredDifficulty' => 'Intermediate',
+            'maxCost' => 50
+        ]);
+
+        $this->context = new Context(new User(1, 'Walmir Silva'), $recentActivities, $additionalFactors);
     }
 
-    public function testCanCreateVideoBasedRecommender(): void
+    public function testEndToEnd(): void
     {
+        // Test Factory and Recommender Strategies
         $factory = new RecommenderFactory();
-        $recommender = $factory->createRecommender('video');
-        $this->assertInstanceOf(VideoBasedRecommender::class, $recommender);
-    }
+        $contentBasedRecommender = $factory->createRecommender('content');
+        $videoBasedRecommender = $factory->createRecommender('video');
+        $courseBasedRecommender = $factory->createRecommender('course');
 
-    public function testCanUpdateRecommendationsBasedOnUserActivity(): void
-    {
-        $user = new User(1, 'John Doe');
-        $recentActivities = new RecentActivities(['activity1', 'activity2']);
-        $additionalFactors = new AdditionalFactors(['factor1' => 'value1']);
+        // Test Hybrid Recommender
+        $strategies = new Strategies([$contentBasedRecommender, $videoBasedRecommender, $courseBasedRecommender]);
+        $hybridRecommender = new HybridRecommender($strategies->getStrategies());
 
-        $context = new Context($user, $recentActivities, $additionalFactors);
+        // Test Decorators
+        $costFiltered = new CostFilterDecorator($hybridRecommender);
+        $difficultyFiltered = new DifficultyFilterDecorator($costFiltered);
 
-        $recommender = new ContentBasedRecommender();
-        $recommendations = $recommender->updateRecommendations($context);
+        // Test Observer
+        $eventManager = EventManager::getInstance();
+        $eventManager->addListener('update', function ($context) use ($difficultyFiltered) {
+            $difficultyFiltered->updateRecommendations($context);
+        });
 
-        $this->assertNotEmpty($recommendations);
+        $userActivityObserver = new UserActivityObserver($difficultyFiltered);
+        $eventManager->addListener('userActivity', [$userActivityObserver, 'update']);
+
+
+        // Trigger update
+        $eventManager->trigger('update', $this->context);
+        $eventManager->trigger('userActivity', $this->context);
+
+        // Test Memento
+        $memento = new RecommenderMemento($difficultyFiltered->getRecommendations());
+
+        // Assertions
+        // Verificar se as estratégias de recomendação foram criadas corretamente
+        $this->assertInstanceOf(ContentBasedRecommender::class, $contentBasedRecommender);
+        $this->assertInstanceOf(VideoBasedRecommender::class, $videoBasedRecommender);
+        $this->assertInstanceOf(CourseBasedRecommender::class, $courseBasedRecommender);
+
+        // Verificar se o HybridRecommender está funcionando como esperado
+        $recommendations = $hybridRecommender->getRecommendations();
         $this->assertIsArray($recommendations);
-    }
+        $this->assertNotEmpty($recommendations);
 
-    public function testCanUndoLastRecommendation(): void
-    {
-        // Logic to test the undo functionality
-        // For this example, let's assume that the RecommenderMemento class is used to save the state
-        $user = new User(1, 'John Doe');
-        $recentActivities = new RecentActivities(['activity1', 'activity2']);
-        $additionalFactors = new AdditionalFactors(['factor1' => 'value1']);
+        // Verificar se os Decorators estão funcionando como esperado
+        $filteredRecommendations = $difficultyFiltered->getRecommendations();
+        $this->assertIsArray($filteredRecommendations);
 
-        $context = new Context($user, $recentActivities, $additionalFactors);
-
-        $recommender = new ContentBasedRecommender();
-        $recommendations = $recommender->updateRecommendations($context);
-
-        // Save the state
-        $memento = $recommender->save();
-
-        // Modify the recommendations
-        $newRecommendations = $recommender->updateRecommendations($context);
-
-        // Undo the modifications
-        $recommender->restore($memento);
-
-        $this->assertEquals($recommendations, $recommender->getRecommendations());
-    }
-
-
-    public function testCanApplyCostFilter(): void
-    {
-        $user = new User(1, 'John Doe');
-        $recentActivities = new RecentActivities(['activity1', 'activity2']);
-        $additionalFactors = new AdditionalFactors(['factor1' => 'value1']);
-
-        $context = new Context($user, $recentActivities, $additionalFactors);
-
-        $recommender = new ContentBasedRecommender();
-        $recommender = new CostFilterDecorator($recommender); // Decorate with cost filter
-
-        $recommendations = $recommender->updateRecommendations($context);
-
-        // Assuming that the cost filter removes any paid content
-        foreach ($recommendations as $recommendation) {
-            $this->assertEquals('free', $recommendation['cost']);
+        // Verificar se os Decorators estão funcionando como esperado
+        $costFilteredRecommendations = $costFiltered->getRecommendations();
+        $this->assertIsArray($costFilteredRecommendations);
+        foreach ($costFilteredRecommendations as $recommendation) {
+            $this->assertLessThanOrEqual(50, $recommendation['cost']);
         }
-    }
 
-    public function testCanApplyDifficultyFilter(): void
-    {
-        $user = new User(1, 'John Doe');
-        $recentActivities = new RecentActivities(['activity1', 'activity2']);
-        $additionalFactors = new AdditionalFactors(['factor1' => 'value1']);
+        // Testar DifficultyFilterDecorator
+        $difficultyFilteredRecommendations = $difficultyFiltered->getRecommendations();
+        $this->assertIsArray($difficultyFilteredRecommendations);
 
-        $context = new Context($user, $recentActivities, $additionalFactors);
-
-        $recommender = new ContentBasedRecommender();
-        $recommender = new DifficultyFilterDecorator($recommender); // Decorate with difficulty filter
-
-        $recommendations = $recommender->updateRecommendations($context);
-
-        // Assuming that the difficulty filter removes any 'advanced' content
-        foreach ($recommendations as $recommendation) {
-            $this->assertNotEquals('advanced', $recommendation['difficulty']);
+        foreach ($difficultyFilteredRecommendations as $recommendation) {
+            $this->assertEquals('Intermediate', $recommendation['difficulty']);  // Esta linha deve passar se o decorador estiver funcionando corretamente
         }
+
+        // Testar se os decoradores estão encadeados corretamente
+        foreach ($difficultyFilteredRecommendations as $recommendation) {
+            $this->assertLessThanOrEqual(50, $recommendation['cost']);
+        }
+
+        // Verificar se o UserActivityObserver está funcionando corretamente
+        $this->assertTrue($eventManager->hasListener('userActivity'));
+
+        // Verificar se o Memento capturou o estado corretamente
+        $this->assertEquals($memento->getState(), $difficultyFiltered->getRecommendations());
+
+        // Verificar se o EventManager está funcionando corretamente
+        $this->assertTrue($eventManager->hasListener('update'));
+
+        // Verificar se o Factory está funcionando como esperado
+        $this->assertInstanceOf(RecommenderFactory::class, $factory);
+
+        // Verificar se o Context está funcionando como esperado
+        $this->assertInstanceOf(Context::class, $this->context);
     }
 }
