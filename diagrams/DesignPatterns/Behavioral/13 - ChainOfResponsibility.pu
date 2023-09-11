@@ -18,8 +18,8 @@
         +makeRequest() : void
     }
 
-    Handler <|.. ConcreteHandler1
-    Handler <|.. ConcreteHandler2
+    Handler <|.. ConcreteHandler1 : down
+    Handler <|.. ConcreteHandler2 : down
     Handler ..> Handler : next
     Client -> Handler : sends request
     note right of Handler : Pode ter um sucessor na cadeia

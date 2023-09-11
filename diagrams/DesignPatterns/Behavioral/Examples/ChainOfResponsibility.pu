@@ -27,10 +27,10 @@
     }
 
     ' Relações
-    NoviceElder .up.|> Elder: nextElder
-    WiseElder -up-|> NoviceElder: Inheritance
-    WiserElder -up-|> WiseElder: Inheritance
-    WisestOfAllElder -up-|> WiserElder: Inheritance
+    Elder <|.. NoviceElder : Implements
+    NoviceElder -right-> WiseElder : Inherits
+    WiseElder -right-> WiserElder : Inherits
+    WiserElder -right-> WisestOfAllElder : Inherits
 
-    Elder --> Elder: nextElder
+    Elder -right-> Elder: nextElder
 @enduml
