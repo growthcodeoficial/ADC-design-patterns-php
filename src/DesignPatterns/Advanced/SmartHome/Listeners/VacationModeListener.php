@@ -1,6 +1,12 @@
 <?php
 
-namespace GrowthCode\DesignPatterns\Advanced\SmartHomeExample;
+namespace GrowthCode\DesignPatterns\Advanced\SmartHome\Listeners;
+
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Commands\Command;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Devices\SmartDevice;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Events\Event;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Events\EventManager;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\States\ObjectState;
 
 class VacationModeListener implements EventListener, Command
 {

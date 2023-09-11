@@ -1,7 +1,9 @@
 <?php
 
-namespace GrowthCode\DesignPatterns\Advanced\SmartHomeExample;
+namespace GrowthCode\DesignPatterns\Advanced\SmartHome\Events;
 
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Listeners\EventListener;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\States\ObjectState;
 use SplStack;
 
 final class EventManager

@@ -1,6 +1,6 @@
 <?php
 
-namespace GrowthCode\DesignPatterns\Advanced\SmartHomeExample;
+namespace GrowthCode\DesignPatterns\Advanced\SmartHome\Devices;
 
 class LightDevice extends SmartDevice
 {

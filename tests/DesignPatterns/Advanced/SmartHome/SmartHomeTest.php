@@ -1,13 +1,13 @@
 <?php
 
-namespace GrowthCode\Tests\DesignPatterns\Advanced\SmartHomeExample;
+namespace GrowthCode\Tests\DesignPatterns\Advanced\SmartHome;
 
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Devices\LightDevice;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Devices\ThermostatDevice;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Events\Event;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Events\EventManager;
+use GrowthCode\DesignPatterns\Advanced\SmartHome\Listeners\VacationModeListener;
 use PHPUnit\Framework\TestCase;
-use GrowthCode\DesignPatterns\Advanced\SmartHomeExample\EventManager;
-use GrowthCode\DesignPatterns\Advanced\SmartHomeExample\LightDevice;
-use GrowthCode\DesignPatterns\Advanced\SmartHomeExample\ThermostatDevice;
-use GrowthCode\DesignPatterns\Advanced\SmartHomeExample\VacationModeListener;
-use GrowthCode\DesignPatterns\Advanced\SmartHomeExample\Event;
 
 final class SmartHomeTest extends TestCase
 {

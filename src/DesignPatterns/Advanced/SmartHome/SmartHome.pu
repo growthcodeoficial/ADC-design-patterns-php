@@ -1,19 +1,17 @@
-@startuml SmartHomeExample
+@startuml SmartHome
 !define RECTANGLE class
 
-package "GrowthCode\DesignPatterns\Advanced\SmartHomeExample" {
-  RECTANGLE EventListener  <<interface>> {
-    +handle(event: Event): void
-  }
-
+package "Commands" {
   RECTANGLE Command <<interface>> {
     +execute(): void
     +undo(): void
   }
+}
 
-  RECTANGLE ObjectState {
-    -state: any
-    +getState(): any
+package "Events" {
+  RECTANGLE Event {
+    -type: string
+    +getType(): string
   }
 
   RECTANGLE EventManager <<singleton>> {
@@ -25,12 +23,30 @@ package "GrowthCode\DesignPatterns\Advanced\SmartHomeExample" {
     +pushState(state: ObjectState): void
     +popState(): ObjectState?
   }
+}
 
-  RECTANGLE Event {
-    -type: string
-    +getType(): string
+package "Listeners" {
+  RECTANGLE EventListener  <<interface>> {
+    +handle(event: Event): void
   }
 
+  RECTANGLE VacationModeListener {
+    -device: SmartDevice
+    -eventManager: EventManager
+    +handle(event: Event): void
+    +execute(): void
+    +undo(): void
+  }
+}
+
+package "States" {
+  RECTANGLE ObjectState {
+    -state: any
+    +getState(): any
+  }
+}
+
+package "Devices" {
   abstract RECTANGLE SmartDevice <<abstract>> {
     -status: int
     {abstract} +modify(): void
@@ -43,14 +59,6 @@ package "GrowthCode\DesignPatterns\Advanced\SmartHomeExample" {
 
   RECTANGLE ThermostatDevice {
     +modify(): void
-  }
-
-  RECTANGLE VacationModeListener {
-    -device: SmartDevice
-    -eventManager: EventManager
-    +handle(event: Event): void
-    +execute(): void
-    +undo(): void
   }
 }
 
