@@ -40,7 +40,7 @@ test: ## Executa os testes com PHPUnit
 	$(EXEC_PHP) vendor/bin/phpunit tests --testdox --colors=always --no-results
 
 test-class: ## Executa testes em uma classe específica (usar como make test-class class=<ClassName>)
-	$(EXEC_PHP) vendor/bin/phpunit tests --filter $(class) --testdox --colors=always
+	$(EXEC_PHP) vendor/bin/phpunit tests --filter $(class) --testdox --colors=always  
 
 bash: ## Acessa o shell do contêiner PHP
 	$(EXEC_PHP) bash

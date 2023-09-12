@@ -33,95 +33,167 @@ class CRCLSTest extends TestCase
         ]);
 
         // Inicialize AdditionalFactors com outros fatores que podem ser relevantes para as recomendações.
-        $additionalFactors = new AdditionalFactors([
-            'preferredDifficulty' => 'Intermediate',
-            'maxCost' => 50
-        ]);
+        $additionalFactors = new AdditionalFactors('Intermediate', 50);
 
         $this->context = new Context(new User(1, 'Walmir Silva'), $recentActivities, $additionalFactors);
     }
 
-    public function testEndToEnd(): void
+    /**
+     * @return Context
+     */
+    public function testContextInitialization(): Context
     {
-        // Test Factory and Recommender Strategies
+        $this->assertInstanceOf(Context::class, $this->context);
+        return $this->context;
+    }
+
+    /**
+     * @depends testContextInitialization
+     * @return RecommenderFactory
+     */
+    public function testFactoryCreation(): RecommenderFactory
+    {
         $factory = new RecommenderFactory();
+        $this->assertInstanceOf(RecommenderFactory::class, $factory);
+        return $factory;
+    }
+
+    /**
+     * @depends testFactoryCreation
+     * @depends testContextInitialization
+     * @return array
+     */
+    public function testRecommenderStrategies(RecommenderFactory $factory): array
+    {
         $contentBasedRecommender = $factory->createRecommender('content');
         $videoBasedRecommender = $factory->createRecommender('video');
         $courseBasedRecommender = $factory->createRecommender('course');
 
-        // Test Hybrid Recommender
-        $strategies = new Strategies([$contentBasedRecommender, $videoBasedRecommender, $courseBasedRecommender]);
+        $this->assertInstanceOf(ContentBasedRecommender::class, $contentBasedRecommender);
+        $this->assertInstanceOf(VideoBasedRecommender::class, $videoBasedRecommender);
+        $this->assertInstanceOf(CourseBasedRecommender::class, $courseBasedRecommender);
+
+        return [$contentBasedRecommender, $videoBasedRecommender, $courseBasedRecommender];
+    }
+
+    /**
+     * @depends testRecommenderStrategies
+     * @depends testContextInitialization
+     * @return HybridRecommender
+     */
+    public function testHybridRecommender(array $recommenders): HybridRecommender
+    {
+        $strategies = new Strategies($recommenders);
         $hybridRecommender = new HybridRecommender($strategies->getStrategies());
 
-        // Test Decorators
+        // Configurar Decorators e Observer
         $costFiltered = new CostFilterDecorator($hybridRecommender);
         $difficultyFiltered = new DifficultyFilterDecorator($costFiltered);
-
-        // Test Observer
         $eventManager = EventManager::getInstance();
         $eventManager->addListener('update', function ($context) use ($difficultyFiltered) {
             $difficultyFiltered->updateRecommendations($context);
         });
 
-        $userActivityObserver = new UserActivityObserver($difficultyFiltered);
-        $eventManager->addListener('userActivity', [$userActivityObserver, 'update']);
-
-
-        // Trigger update
+        // Disparar o evento para preencher as recomendações
         $eventManager->trigger('update', $this->context);
-        $eventManager->trigger('userActivity', $this->context);
 
-        // Test Memento
-        $memento = new RecommenderMemento($difficultyFiltered->getRecommendations());
-
-        // Assertions
-        // Verificar se as estratégias de recomendação foram criadas corretamente
-        $this->assertInstanceOf(ContentBasedRecommender::class, $contentBasedRecommender);
-        $this->assertInstanceOf(VideoBasedRecommender::class, $videoBasedRecommender);
-        $this->assertInstanceOf(CourseBasedRecommender::class, $courseBasedRecommender);
-
-        // Verificar se o HybridRecommender está funcionando como esperado
+        // Agora, as recomendações devem ser preenchidas
         $recommendations = $hybridRecommender->getRecommendations();
         $this->assertIsArray($recommendations);
         $this->assertNotEmpty($recommendations);
 
-        // Verificar se os Decorators estão funcionando como esperado
+        return $hybridRecommender;
+    }
+
+
+    /**
+     * @depends testHybridRecommender
+     * @return DifficultyFilterDecorator
+     */
+    public function testDecorators(HybridRecommender $hybridRecommender): DifficultyFilterDecorator
+    {
+        $costFiltered = new CostFilterDecorator($hybridRecommender);
+        $difficultyFiltered = new DifficultyFilterDecorator($costFiltered);
+
         $filteredRecommendations = $difficultyFiltered->getRecommendations();
         $this->assertIsArray($filteredRecommendations);
 
-        // Verificar se os Decorators estão funcionando como esperado
-        $costFilteredRecommendations = $costFiltered->getRecommendations();
-        $this->assertIsArray($costFilteredRecommendations);
-        foreach ($costFilteredRecommendations as $recommendation) {
-            $this->assertLessThanOrEqual(50, $recommendation['cost']);
-        }
+        return $difficultyFiltered;
+    }
 
-        // Testar DifficultyFilterDecorator
-        $difficultyFilteredRecommendations = $difficultyFiltered->getRecommendations();
-        $this->assertIsArray($difficultyFilteredRecommendations);
+    /**
+     * @depends testDecorators
+     * @depends testContextInitialization
+     */
+    public function testObserver(DifficultyFilterDecorator $difficultyFiltered, Context $context): void
+    {
+        $eventManager = EventManager::getInstance();
+        $userActivityObserver = new UserActivityObserver($difficultyFiltered);
+        $eventManager->addListener('userActivity', [$userActivityObserver, 'update']);
 
-        foreach ($difficultyFilteredRecommendations as $recommendation) {
-            $this->assertEquals('Intermediate', $recommendation['difficulty']);  // Esta linha deve passar se o decorador estiver funcionando corretamente
-        }
-
-        // Testar se os decoradores estão encadeados corretamente
-        foreach ($difficultyFilteredRecommendations as $recommendation) {
-            $this->assertLessThanOrEqual(50, $recommendation['cost']);
-        }
-
-        // Verificar se o UserActivityObserver está funcionando corretamente
         $this->assertTrue($eventManager->hasListener('userActivity'));
+    }
+
+    /**
+     * @depends testDecorators
+     * @return RecommenderMemento
+     */
+    public function testMemento(DifficultyFilterDecorator $difficultyFiltered): RecommenderMemento
+    {
+        $memento = new RecommenderMemento($difficultyFiltered->getRecommendations());
+        $this->assertEqualsCanonicalizing($memento->getState(), $difficultyFiltered->getRecommendations());
+
+        return $memento;
+    }
+
+    /**
+     * @depends testHybridRecommender
+     * @depends testDecorators
+     * @depends testObserver
+     * @depends testMemento
+     * @depends testContextInitialization
+     */
+    public function testEndToEnd(HybridRecommender $hybridRecommender, DifficultyFilterDecorator $difficultyFiltered, $observer, RecommenderMemento $memento, Context $context): void
+    {
+        // Verificar se o HybridRecommender e o DifficultyFilterDecorator têm o mesmo estado inicial
+        $this->assertEquals($hybridRecommender->getRecommendations(), $difficultyFiltered->getRecommendations());
 
         // Verificar se o Memento capturou o estado corretamente
-        $this->assertEquals($memento->getState(), $difficultyFiltered->getRecommendations());
+        $this->assertEqualsCanonicalizing($memento->getState(), $difficultyFiltered->getRecommendations());
 
-        // Verificar se o EventManager está funcionando corretamente
+        // Simular uma atividade do usuário e disparar o observador
+        $eventManager = EventManager::getInstance();
+        $eventManager->trigger('userActivity', $context);
+
+        // Verificar se o DifficultyFilterDecorator foi atualizado corretamente
+        $this->assertNotEquals($memento->getState(), $difficultyFiltered->getRecommendations());
+
+        // Verificar se o estado atual do DifficultyFilterDecorator é consistente com o HybridRecommender
+        $this->assertNotEquals($hybridRecommender->getRecommendations(), $difficultyFiltered->getRecommendations());
+
+        // Verificar se o EventManager ainda tem os ouvintes corretos
+        $this->assertTrue($eventManager->hasListener('userActivity'));
         $this->assertTrue($eventManager->hasListener('update'));
 
-        // Verificar se o Factory está funcionando como esperado
-        $this->assertInstanceOf(RecommenderFactory::class, $factory);
+        // Aqui fica asserções que verificam o estado geral do sistema
+        // Verificar se o número de recomendações filtradas é menor ou igual ao número de recomendações híbridas
+        $this->assertLessThanOrEqual(count($hybridRecommender->getRecommendations()), count($difficultyFiltered->getRecommendations()));
 
-        // Verificar se o Context está funcionando como esperado
-        $this->assertInstanceOf(Context::class, $this->context);
+        // Verificar se todas as recomendações filtradas atendem aos critérios de dificuldade e custo
+        foreach ($difficultyFiltered->getRecommendations() as $recommendation) {
+            $this->assertEquals('Intermediate', $recommendation['difficulty']);
+            $this->assertLessThanOrEqual(50, $recommendation['cost']);
+        }
+
+        // Verificar se o estado do Memento não mudou (imutabilidade)
+        $newMemento = new RecommenderMemento($difficultyFiltered->getRecommendations());
+        $this->assertNotEquals($memento, $newMemento);
+
+        // Verificar se o contexto ainda contém o mesmo usuário (imutabilidade)
+        $this->assertEquals($context->getUser()->getId(), 1);
+
+        // Verificar se o EventManager não tem ouvintes adicionais não esperados
+        $this->assertTrue($eventManager->hasListener('userActivity'));
+        $this->assertTrue($eventManager->hasListener('update'));
     }
 }

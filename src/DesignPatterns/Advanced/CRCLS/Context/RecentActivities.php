@@ -4,7 +4,7 @@ namespace GrowthCode\DesignPatterns\Advanced\CRCLS\Context;
 
 final class RecentActivities
 {
-    private $activities;
+    private array $activities;
 
     public function __construct(array $activities)
     {

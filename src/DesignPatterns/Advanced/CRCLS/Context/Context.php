@@ -17,7 +17,7 @@ class Context
         $this->additionalFactors = $additionalFactors;
     }
 
-    
+
     public function getUser(): User
     {
         return $this->user;

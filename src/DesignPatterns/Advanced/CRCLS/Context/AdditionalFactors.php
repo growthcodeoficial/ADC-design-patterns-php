@@ -4,23 +4,23 @@ namespace GrowthCode\DesignPatterns\Advanced\CRCLS\Context;
 
 class AdditionalFactors
 {
-    private array $factors = [
-        'preferredDifficulty' => '',
-        'maxCost' => 0
-    ];
+    private string $preferredDifficulty;
 
-    public function __construct(array $factors)
+    private int $maxCost = 0;
+
+    public function __construct(string $preferredDifficulty, int $maxCost)
     {
-        $this->factors = $factors;
+        $this->preferredDifficulty = $preferredDifficulty;
+        $this->maxCost = $maxCost;
     }
 
     public function getPreferredDifficulty(): string
     {
-        return $this->factors['preferredDifficulty'];
+        return $this->preferredDifficulty;
     }
 
     public function getMaxCost(): int
     {
-        return $this->factors['maxCost'];
+        return $this->maxCost;
     }
 }

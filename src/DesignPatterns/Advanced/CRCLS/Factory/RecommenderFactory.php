@@ -6,11 +6,10 @@ use GrowthCode\DesignPatterns\Advanced\CRCLS\Recommender\RecommenderStrategyInte
 use GrowthCode\DesignPatterns\Advanced\CRCLS\Recommender\ContentBasedRecommender;
 use GrowthCode\DesignPatterns\Advanced\CRCLS\Recommender\VideoBasedRecommender;
 use GrowthCode\DesignPatterns\Advanced\CRCLS\Recommender\CourseBasedRecommender;
-use GrowthCode\DesignPatterns\Advanced\CRCLS\Recommender\IgnorerStrategyInterface;
 
 class RecommenderFactory
 {
-    private $strategies = [];
+    private array $strategies = [];
 
     public function __construct()
     {
@@ -19,7 +18,7 @@ class RecommenderFactory
         $this->strategies['course'] = new CourseBasedRecommender();
     }
 
-    public function createRecommender(string $type): RecommenderStrategyInterface | IgnorerStrategyInterface
+    public function createRecommender(string $type): RecommenderStrategyInterface
     {
         if (!isset($this->strategies[$type])) {
             throw new \InvalidArgumentException("Invalid recommender type: $type");
