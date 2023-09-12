@@ -1,109 +1,133 @@
 
+' @startuml CRCLS
+
 @startuml CRCLS
+
 left to right direction
 
 !define RECTANGLE class
 
 package "GrowthCode.DesignPatterns.Advanced.CRCLS" {
+
   package "User" {
-    RECTANGLE "User" as User {
-      +id: int
-      +name: string
+    RECTANGLE User {
+      +getId(): inta
+      +getName(): string
     }
   }
 
   package "Context" {
-    RECTANGLE "Context" as Context {
-      +recentActivities: RecentActivities
-      +additionalFactors: AdditionalFactors
+    RECTANGLE RecentActivities {
+      +getActivities(activity: string): array
     }
-    RECTANGLE "RecentActivities" as RecentActivities
-    RECTANGLE "AdditionalFactors" as AdditionalFactors
+
+    RECTANGLE AdditionalFactors {
+      +getPreferredDifficulty(): string
+      +getMaxCost(): int
+    }
+
+    RECTANGLE Context {
+      +getUser(): User
+      +getRecentActivities(): RecentActivities
+      +getAdditionalFactors(): AdditionalFactors
+    }
+  }
+
+  interface "RecommenderStrategyInterface" {
+    +updateRecommendations(context: Context): array
+    +getRecommendations(): array
   }
 
   package "Recommender" {
-    interface "RecommenderStrategyInterface" as RecommenderStrategyInterface {
-      +execute(): array
+    RECTANGLE ContentBasedRecommender {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
     }
-    RECTANGLE "ContentBasedRecommender" as ContentBasedRecommender
-    RECTANGLE "VideoBasedRecommender" as VideoBasedRecommender
-    RECTANGLE "CourseBasedRecommender" as CourseBasedRecommender
+
+    RECTANGLE VideoBasedRecommender {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
+
+    RECTANGLE CourseBasedRecommender {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
   }
 
   package "Factory" {
-    RECTANGLE "RecommenderFactory" as RecommenderFactory {
-      +createRecommender(string): RecommenderStrategyInterface
+    RECTANGLE RecommenderFactory {
+      +createRecommender(type: string): RecommenderStrategyInterface
     }
   }
 
   package "Observer" {
-    RECTANGLE "UserActivityObserver" as UserActivityObserver {
-      +update(): void
+    RECTANGLE UserActivityObserver {
+      +update(context: Context): void
     }
   }
 
   package "Decorator" {
-    RECTANGLE "CostFilterDecorator" as CostFilterDecorator
-    RECTANGLE "DifficultyFilterDecorator" as DifficultyFilterDecorator
-  }
+    RECTANGLE CostFilterDecorator {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
 
-  package "Command" {
-    RECTANGLE "IgnoreContentCommand" as IgnoreContentCommand {
-      +execute(): void
+    RECTANGLE DifficultyFilterDecorator {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
     }
   }
 
   package "Hybrid" {
-    RECTANGLE "HybridRecommender" as HybridRecommender {
-      +strategies: Strategies
+    RECTANGLE Strategies {
+      +getStrategies(): array
     }
-    RECTANGLE "Strategies" as Strategies
+
+    RECTANGLE HybridRecommender {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
   }
 
   package "EventManager" {
-    RECTANGLE "EventManager" as EventManager {
-      +getInstance(): EventManager
+    RECTANGLE EventManager {
+      +addListener(eventType: string, listener: callable): void
+      +trigger(event: string, context: Context): void
+      +hasListener(event: string): bool
     }
   }
 
   package "Memento" {
-    RECTANGLE "RecommenderMemento" as RecommenderMemento {
+    RECTANGLE RecommenderMemento {
       +getState(): array
-      +setState(array): void
     }
   }
 }
+
+User --> Context : contains
+RecentActivities --> Context : contains
+AdditionalFactors --> Context : contains
 
 RecommenderStrategyInterface <|.. ContentBasedRecommender
 RecommenderStrategyInterface <|.. VideoBasedRecommender
 RecommenderStrategyInterface <|.. CourseBasedRecommender
 
-Context o-- RecentActivities
-Context o-- AdditionalFactors
 
-RecommenderFactory ..> RecommenderStrategyInterface : <<creates>>
+RecommenderStrategyInterface ..> Context : uses
 
-UserActivityObserver --> User : <<observes>>
+RecommenderFactory --> RecommenderStrategyInterface : creates
 
-CostFilterDecorator ..|> RecommenderStrategyInterface : <<implements>>
-DifficultyFilterDecorator ..|> RecommenderStrategyInterface : <<implements>>
+UserActivityObserver --> RecommenderStrategyInterface : observes
 
-HybridRecommender o-- Strategies : <<uses>>
+CostFilterDecorator --> RecommenderStrategyInterface : decorates
+DifficultyFilterDecorator --> RecommenderStrategyInterface : decorates
 
-EventManager --> UserActivityObserver : <<notifies>>
+Strategies --> RecommenderStrategyInterface : contains
+HybridRecommender --> RecommenderStrategyInterface : implements
 
-RecommenderMemento -- RecommenderStrategyInterface : <<saves state>>
+EventManager --> Context : triggers
 
-HybridRecommender ..> RecommenderFactory : <<uses>>
-HybridRecommender ..> EventManager : <<uses>>
-HybridRecommender ..> UserActivityObserver : <<uses>>
-
-UserActivityObserver ..> EventManager : <<uses>>
-
-IgnoreContentCommand ..> User : <<modifies>>
-
-RecommenderFactory ..> EventManager : <<uses>>
-
-HybridRecommender ..> Context : <<uses>>
+RecommenderMemento --> RecommenderStrategyInterface : captures state
 
 @enduml
