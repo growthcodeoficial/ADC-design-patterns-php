@@ -24,7 +24,7 @@ class PatternRenderer
         $categories = $this->organizePatternsByCategory();
 
         foreach ($categories as $category => $patterns) {
-            $summary .= "<h2>" . ucfirst($category) . " Padrões</h2><ul>";
+            $summary .= "<h2>" . ucfirst($category) . " Patterns</h2><ul>";
             $summary .= $this->renderPatternsList($patterns);
             $summary .= '</ul>';
         }
@@ -63,7 +63,7 @@ class PatternRenderer
                 return $this->renderPatternContent($pattern);
             }
         }
-        return '<h2>Pattern não encontrado</h2>';
+        return '<h2>Pattern not found</h2>';
     }
 
     private function renderPatternContent(Pattern $pattern): string
@@ -73,6 +73,6 @@ class PatternRenderer
             $readmeContent = file_get_contents($readmePath);
             return "<h2>" . ucfirst($pattern->getName()) . "</h2><pre>" . htmlspecialchars($readmeContent) . "</pre>";
         }
-        return '<h2>Pattern não encontrado</h2>';
+        return '<h2>Pattern not found</h2>';
     }
 }

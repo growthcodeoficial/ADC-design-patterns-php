@@ -6,7 +6,7 @@ use GrowthCode\DesignPatterns\PatternRenderer;
 use GrowthCode\DesignPatterns\PatternFactory;
 
 $patternsPath = '../src/DesignPatterns/';
-$categories = ['creational', 'structural', 'behavioral'];
+$categories = ['Creational', 'Structural', 'Behavioral', 'Advanced'];
 $factory = new PatternFactory();
 $patterns = $factory->createPatternsFromCategories($categories, $patternsPath);
 
