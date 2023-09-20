@@ -1,0 +1,49 @@
+@startuml LogSystemExample
+
+!define RECTANGLE class
+
+package "GrowthCode.DesignPatterns.Advanced.LogSystemExample" {
+    interface LogStrategy <<interface>> {
+        +format(message: string): string
+    }
+
+    interface LogObserver <<interface>> {
+        +notify(message: string): void
+    }
+
+    abstract RECTANGLE Logger <<abstract>> {
+        +setNext(logger: Logger): void
+        +setStrategy(strategy: LogStrategy): void
+        +log(message: string): void
+        {abstract} -writeLog(message: string): void
+    }
+
+    RECTANGLE LoggingSystem {
+        -logger: Logger
+        -observers: LogObserver[]
+        +addObserver(observer: LogObserver): void
+        +logMessage(message: string): void
+    }
+}
+
+class SimpleLogStrategy {
+    +format(message: string): string
+}
+
+class EmailNotifier {
+    +notify(message: string): void
+}
+
+class ConsoleLogger {
+    -writeLog(message: string): void
+}
+
+LogStrategy <|.. SimpleLogStrategy
+LogObserver <|.. EmailNotifier
+Logger <|-- ConsoleLogger
+Logger ..> LogStrategy : uses
+Logger ..> Logger : next
+LoggingSystem ..> Logger : uses
+LoggingSystem ..> LogObserver : notifies
+
+@enduml

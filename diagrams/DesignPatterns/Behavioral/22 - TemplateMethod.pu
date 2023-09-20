@@ -1,0 +1,17 @@
+@startuml TemplateMethod
+    skinparam classAttributeIconSize 0
+
+    abstract class AbstractClass <<abstract>> {
+        +templateMethod() : void
+        + {abstract} primitiveOperation1() : void
+        +  {abstract} primitiveOperation2() : void
+    }
+
+    class ConcreteClass {
+        +primitiveOperation1() : void
+        +primitiveOperation2() : void
+    }
+
+    AbstractClass <|-- ConcreteClass
+    note right of AbstractClass : Define a estrutura do algoritmo
+@enduml

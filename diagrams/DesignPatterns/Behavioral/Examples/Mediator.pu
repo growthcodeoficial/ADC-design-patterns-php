@@ -1,0 +1,45 @@
+@startuml MediatorWithClient
+    skinparam classAttributeIconSize 0
+
+    ' Interface for Mediator
+    interface Mediator <<interface>> {
+        + send(message: string, country: Country): void
+    }
+
+    ' Concrete Mediator
+    class UnitedNations {
+        - countries: SplObjectStorage
+        ---
+        + addCountry(country: Country): void
+        + send(message: string, country: Country): void
+    }
+
+    ' Abstract Colleague
+    abstract class Country <<abstract>> {
+        - mediator: Mediator
+        ---
+        + {abstract} send(message: string): void
+        + {abstract} receive(message: string): void
+    }
+
+    ' Concrete Colleagues
+    class USA {
+        + send(message: string): void
+        + receive(message: string): void
+    }
+
+    class Russia {
+        + send(message: string): void
+        + receive(message: string): void
+    }
+
+    ' Relationships
+    Mediator <|.. UnitedNations
+    Country <|-- USA
+    Country <|-- Russia
+    UnitedNations ..> Country: communicates
+
+    Country --> Mediator
+    ' USA --> Mediator: uses
+    ' Russia --> Mediator: uses
+@enduml

@@ -1,0 +1,32 @@
+@startuml State
+    skinparam classAttributeIconSize 0
+
+    interface ChameleonState {
+        +changeColor(chameleon : Chameleon) : void
+    }
+    
+    class Chameleon {
+        -state : ChameleonState
+        +changeColor() : void
+    }
+    
+    class GreenState {
+        +changeColor(chameleon : Chameleon) : void
+    }
+    
+    class BrownState {
+        +changeColor(chameleon : Chameleon) : void
+    }
+    
+    class BlueState {
+        +changeColor(chameleon : Chameleon) : void
+    }
+    
+    ChameleonState <|.. GreenState
+    ChameleonState <|.. BrownState
+    ChameleonState <|.. BlueState
+    
+    Chameleon -> ChameleonState : has-a
+    note right of Chameleon : Context
+    note right of ChameleonState : State
+@enduml

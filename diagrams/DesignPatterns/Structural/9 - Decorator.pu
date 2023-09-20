@@ -1,0 +1,27 @@
+@startuml Decorator
+    skinparam classAttributeIconSize 0
+    
+    interface Component <<interface>> {
+        +operation() : void
+    }
+
+    class ConcreteComponent {
+        +operation() : void
+    }
+
+    class Decorator {
+        +operation() : void
+        -component : Component
+    }
+
+    class ConcreteDecorator {
+        +operation() : void
+        +addedBehavior() : void
+    }
+
+    Component <|.. ConcreteComponent
+    Component <|.. Decorator
+    Decorator <|-- ConcreteDecorator
+    Decorator o.. Component : decorates
+    note right of Decorator : Decora um Component
+@enduml

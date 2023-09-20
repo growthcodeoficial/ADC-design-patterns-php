@@ -1,0 +1,27 @@
+@startuml MementoComplete
+    skinparam classAttributeIconSize 0
+
+    class MemoryCapsule {
+        -state : string
+        +getState() : string
+    }
+    
+    class Person {
+        -state : string
+        +setState(state : string) : void
+        +saveToMemoryCapsule() : MemoryCapsule
+        +restoreFromMemoryCapsule(memoryCapsule : MemoryCapsule) : void
+    }
+    
+    class Librarian {
+        -savedMemoryCapsules : SplStack
+        +addMemoryCapsule(memoryCapsule : MemoryCapsule) : void
+        +getMemoryCapsule() : MemoryCapsule
+    }
+    
+    Person --> MemoryCapsule : Creates
+    Librarian --> MemoryCapsule : Stores
+    note right of Person : Originator
+    note right of MemoryCapsule : Memento
+    note right of Librarian : Caretaker
+@enduml

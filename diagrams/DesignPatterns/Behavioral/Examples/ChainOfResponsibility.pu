@@ -1,0 +1,36 @@
+@startuml ChainOfResponsibilityWithClient
+    skinparam classAttributeIconSize 0
+
+    ' Interface
+    interface Elder <<interface>> {
+        + setNextElder(Elder): Elder
+        + advise(string): string
+    }
+
+    ' Classes
+    class NoviceElder {
+        - nextElder: Elder
+        + setNextElder(Elder): Elder
+        + advise(string): string
+    }
+
+    class WiseElder {
+        + advise(string): string
+    }
+
+    class WiserElder {
+        + advise(string): string
+    }
+
+    class WisestOfAllElder {
+        + advise(string): string
+    }
+
+    ' Relações
+    Elder <|.. NoviceElder : Implements
+    NoviceElder -right-> WiseElder : Inherits
+    WiseElder -right-> WiserElder : Inherits
+    WiserElder -right-> WisestOfAllElder : Inherits
+
+    Elder -right-> Elder: nextElder
+@enduml

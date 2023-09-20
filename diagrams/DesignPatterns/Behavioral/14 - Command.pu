@@ -1,0 +1,32 @@
+@startuml CommandWithClient
+    skinparam classAttributeIconSize 0
+
+    interface Command <<interface>> {
+        +execute() : void
+    }
+
+    class Invoker {
+        -command : Command
+    }
+
+    class ConcreteCommand {
+        +execute() : void
+        -receiver : Receiver
+    }
+
+    class Receiver {
+        +action() : void
+    }
+    
+    class Client {
+        +setUpCommand() : void
+    }
+
+    Client -> Receiver
+    Client ..> ConcreteCommand
+
+    Invoker o--> Command : invokes
+    ConcreteCommand -> Receiver : calls
+    Command <|.. ConcreteCommand
+    note right of Invoker : Solicita a execução do comando
+@enduml

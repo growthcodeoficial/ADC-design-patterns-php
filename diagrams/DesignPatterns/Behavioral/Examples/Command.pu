@@ -1,0 +1,38 @@
+@startuml CommandWithClient
+    skinparam classAttributeIconSize 0
+    
+    ' Interfaces
+    interface Command <<interface>> {
+        + execute(): string
+    }
+
+    ' Classes
+    class AttackCommand {
+        + execute(): string
+    }
+
+    class DefendCommand {
+        + execute(): string
+    }
+
+    class MilitaryCommander {
+        - commands: SplQueue
+        + addCommand(Command): void
+        + executeCommands(): void
+    }
+
+    class CommandCenter {
+        - militaryCommander: MilitaryCommander
+        + initiateAttack(): void
+        + initiateDefense(): void
+        + executeOperations(): void
+    }
+
+    ' Relações
+    Command <|.. AttackCommand
+    Command <|.. DefendCommand
+    MilitaryCommander o--> Command: uses
+    CommandCenter .up.> MilitaryCommander: uses
+    CommandCenter .up.> Command: uses
+
+@enduml

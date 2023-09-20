@@ -1,0 +1,31 @@
+@startuml FlyweightWithClient
+    skinparam classAttributeIconSize 0
+    
+    interface Flyweight <<interface>> {
+        +operation(extrinsicState : int) : void
+    }
+
+    class ConcreteFlyweight {
+        +operation(extrinsicState : int) : void
+    }
+
+    class UnsharedConcreteFlyweight {
+        +operation(extrinsicState : int) : void
+    }
+
+    class FlyweightFactory {
+        -flyweights : Map<String, Flyweight>
+    }
+    
+    class Client {
+        +doSomething() : void
+    }
+
+    Flyweight <|.. ConcreteFlyweight
+    Flyweight <|.. UnsharedConcreteFlyweight
+    FlyweightFactory o--> Flyweight : creates
+    Client -> FlyweightFactory : requests
+    Client -> ConcreteFlyweight
+    Client -> UnsharedConcreteFlyweight
+    note right of FlyweightFactory : Gerencia objetos Flyweight
+@enduml

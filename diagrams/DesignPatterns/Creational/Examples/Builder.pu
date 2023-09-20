@@ -1,0 +1,73 @@
+@startuml Builder
+    skinparam classAttributeIconSize 0
+
+
+    ' Product Parts
+    interface Yeast <<interface>> {
+        + getType() : string
+    }
+
+    interface Salt <<interface>> {
+        + getType() : string
+    }
+
+    ' Product
+    interface Bread <<interface>> {
+        + taste() : string
+        + setYeast(yeast: Yeast) : void
+        + setSalt(salt: Salt) : void
+    }
+
+    ' Concrete Product Parts
+    class ActiveYeast {
+        + getType() : string
+    }
+
+    class SeaSalt {
+        + getType() : string
+    }
+
+    ' Concrete Product
+    class WholeGrainBread {
+        - yeast: Yeast
+        - salt: Salt
+        ---
+        + setYeast(yeast: Yeast) : void
+        + setSalt(salt: Salt) : void
+        + taste() : string
+    }
+
+    ' Builder
+    interface BreadBuilder <<interface>> {
+        + addYeast() : void
+        + addSalt() : void
+        + getResult() : Bread
+    }
+
+    ' Concrete Builder
+    class WholeGrainBreadBuilder {
+        - bread: Bread
+        ---
+        + addYeast() : void
+        + addSalt() : void
+        + getResult() : Bread
+    }
+
+    ' Director
+    class BreadDirector {
+        - builder: BreadBuilder
+        ---
+        + buildBread() : Bread
+    }
+
+    ' Relationships
+    Yeast <|. ActiveYeast
+    Salt <|. SeaSalt
+    Bread <|.. WholeGrainBread
+    BreadBuilder <|.. WholeGrainBreadBuilder
+    BreadDirector ..> BreadBuilder : uses >
+    WholeGrainBreadBuilder ..> WholeGrainBread : builds >
+
+    WholeGrainBreadBuilder ..> SeaSalt : uses >
+    WholeGrainBreadBuilder ..> ActiveYeast : uses >
+@enduml

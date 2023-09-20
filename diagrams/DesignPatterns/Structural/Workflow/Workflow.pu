@@ -1,0 +1,114 @@
+@startuml Workflow
+
+!define RECTANGLE class
+
+package "GrowthCode.DesignPatterns.Structural.Workflow" {
+
+  package "States" {
+    interface StateInterface <<interface>> {
+      +handle(): void
+    }
+
+    RECTANGLE Draft {
+      +handle(): void
+    }
+
+    RECTANGLE Review {
+      +handle(): void
+    }
+
+    RECTANGLE Published {
+      +handle(): void
+    }
+
+    StateInterface <|.. Draft
+    StateInterface <|.. Review
+    StateInterface <|.. Published
+  }
+
+  package "Transitions" {
+    interface TransitionInterface <<interface>> {
+      +execute(): StateInterface
+    }
+
+    RECTANGLE ToReview {
+      +execute(): StateInterface
+    }
+
+    RECTANGLE ToPublished {
+      +execute(): StateInterface
+    }
+
+    TransitionInterface <|.. ToReview
+    TransitionInterface <|.. ToPublished
+  }
+
+  package "Context" {
+    interface WorkflowContextInterface <<interface>> {
+      +applyTransition(TransitionInterface): void
+      +getState(): StateInterface
+    }
+
+    RECTANGLE WorkflowContext {
+      -currentState: StateInterface
+      +applyTransition(TransitionInterface): void
+      +getState(): StateInterface
+    }
+
+    WorkflowContextInterface <|.. WorkflowContext
+  }
+
+  package "Facade" {
+    RECTANGLE WorkflowFacade {
+      -proxy: WorkflowProxy
+      -logger: LoggerInterface
+      +applyTransition(TransitionInterface): void
+      +getCurrentState(): StateInterface
+    }
+  }
+
+  package "Logger" {
+    interface LoggerInterface <<interface>> {
+      +log(string): void
+    }
+
+    RECTANGLE SimpleLogger {
+      +log(string): void
+    }
+
+    LoggerInterface <|.. SimpleLogger
+  }
+
+  package "Security" {
+    interface AuthenticatorInterface <<interface>> {
+      +authenticate(bool): bool
+    }
+
+    RECTANGLE SimpleAuthenticator {
+      +authenticate(bool): bool
+    }
+
+    AuthenticatorInterface <|.. SimpleAuthenticator
+  }
+
+  package "Proxy" {
+    RECTANGLE WorkflowProxy {
+      -context: WorkflowContextInterface
+      -authenticator: AuthenticatorInterface
+      +applyTransition(TransitionInterface): void
+      +getCurrentState(): StateInterface
+    }
+  }
+
+}
+
+WorkflowContext --> StateInterface : uses
+WorkflowContext --> TransitionInterface : uses
+
+WorkflowProxy --> WorkflowContextInterface : uses
+WorkflowProxy --> AuthenticatorInterface : uses
+
+WorkflowFacade --> WorkflowProxy : uses
+WorkflowFacade --> LoggerInterface : uses
+
+@enduml

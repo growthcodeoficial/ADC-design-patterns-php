@@ -1,0 +1,26 @@
+@startuml ProxyWithClient
+    skinparam classAttributeIconSize 0
+    
+    interface Subject <<interface>> {
+        +request() : void
+    }
+
+    class RealSubject {
+        +request() : void
+    }
+
+    class Proxy {
+        +request() : void
+        -realSubject : RealSubject
+    }
+
+    class Client {
+        +doSomething() : void
+    }
+
+    Subject <|.. RealSubject
+    Subject <|.. Proxy
+    Proxy ..> RealSubject : controls
+    Client -> Subject : uses
+    note right of Proxy : Controla o acesso ao RealSubject
+@enduml

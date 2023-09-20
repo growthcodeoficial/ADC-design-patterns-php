@@ -1,0 +1,38 @@
+@startuml Iterator
+    skinparam classAttributeIconSize 0
+
+    interface Iterator <<interface>> {
+        +first() : void
+        +next() : void
+        +isDone() : bool
+        +currentItem() : Object
+    }
+
+    class ConcreteIterator {
+        +first() : void
+        +next() : void
+        +isDone() : bool
+        +currentItem() : Object
+    }
+
+    interface Aggregate <<interface>> {
+        +createIterator() : Iterator
+    }
+
+    class ConcreteAggregate {
+        +createIterator() : Iterator
+    }
+
+    class Client {
+        +IterateOverCollection() : void
+    }
+
+    Iterator <|.. ConcreteIterator
+    Aggregate <|.. ConcreteAggregate
+    ' Aggregate ..> Iterator : creates
+    ConcreteAggregate -> ConcreteIterator
+
+    Client --> Aggregate
+    Client --> Iterator
+    note right of Aggregate : Cria um iterador para a coleção
+@enduml

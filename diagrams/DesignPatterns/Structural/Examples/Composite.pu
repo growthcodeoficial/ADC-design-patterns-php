@@ -1,0 +1,31 @@
+@startuml Composite
+    skinparam classAttributeIconSize 0
+
+    ' Interface Artwork (Component)
+    interface Artwork {
+        + display(): string
+    }
+
+    ' Leaf
+    class Painting {
+        - title: string
+        ---
+        + display(): string
+    }
+
+    ' Composite
+    class ArtMural {
+        - artworks: SplObjectStorage
+        ---
+        + addArtwork(artwork: Artwork): void
+        + removeArtwork(artwork: Artwork): void
+        + display(): string
+    }
+
+    ' Relationships
+    Artwork <|.. Painting
+    Artwork <|.. ArtMural
+    ArtMural o...> Artwork: contains
+    note right of Artwork : Contém componentes filhos
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml Bridge
+    skinparam classAttributeIconSize 0
+    
+    abstract class Abstraction <<abstrqact>> {
+        + {abstract} operation()
+        -implementor : Implementor
+    }
+
+    class RefinedAbstraction {
+        +operation()
+    }
+
+    interface Implementor <<interface>> {
+        +operationImpl() : void
+    }
+
+    class ConcreteImplementor {
+        +operationImpl() : void
+    }
+    
+    Abstraction <|-- RefinedAbstraction
+    Implementor <|-- ConcreteImplementor
+    Abstraction ..> Implementor : uses
+    note right of Abstraction : Usa Implementor para realizar a operação
+@enduml

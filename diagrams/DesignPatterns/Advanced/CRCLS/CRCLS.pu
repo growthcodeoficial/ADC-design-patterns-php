@@ -1,0 +1,133 @@
+
+' @startuml CRCLS
+
+@startuml CRCLS
+
+left to right direction
+
+!define RECTANGLE class
+
+package "GrowthCode.DesignPatterns.Advanced.CRCLS" {
+
+  package "User" {
+    RECTANGLE User {
+      +getId(): inta
+      +getName(): string
+    }
+  }
+
+  package "Context" {
+    RECTANGLE RecentActivities {
+      +getActivities(activity: string): array
+    }
+
+    RECTANGLE AdditionalFactors {
+      +getPreferredDifficulty(): string
+      +getMaxCost(): int
+    }
+
+    RECTANGLE Context {
+      +getUser(): User
+      +getRecentActivities(): RecentActivities
+      +getAdditionalFactors(): AdditionalFactors
+    }
+  }
+
+  interface "RecommenderStrategyInterface" {
+    +updateRecommendations(context: Context): array
+    +getRecommendations(): array
+  }
+
+  package "Recommender" {
+    RECTANGLE ContentBasedRecommender {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
+
+    RECTANGLE VideoBasedRecommender {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
+
+    RECTANGLE CourseBasedRecommender {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
+  }
+
+  package "Factory" {
+    RECTANGLE RecommenderFactory {
+      +createRecommender(type: string): RecommenderStrategyInterface
+    }
+  }
+
+  package "Observer" {
+    RECTANGLE UserActivityObserver {
+      +update(context: Context): void
+    }
+  }
+
+  package "Decorator" {
+    RECTANGLE CostFilterDecorator {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
+
+    RECTANGLE DifficultyFilterDecorator {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
+  }
+
+  package "Hybrid" {
+    RECTANGLE Strategies {
+      +getStrategies(): array
+    }
+
+    RECTANGLE HybridRecommender {
+      +updateRecommendations(context: Context): array
+      +getRecommendations(): array
+    }
+  }
+
+  package "EventManager" {
+    RECTANGLE EventManager {
+      +addListener(eventType: string, listener: callable): void
+      +trigger(event: string, context: Context): void
+      +hasListener(event: string): bool
+    }
+  }
+
+  package "Memento" {
+    RECTANGLE RecommenderMemento {
+      +getState(): array
+    }
+  }
+}
+
+User --> Context : contains
+RecentActivities --> Context : contains
+AdditionalFactors --> Context : contains
+
+RecommenderStrategyInterface <|.. ContentBasedRecommender
+RecommenderStrategyInterface <|.. VideoBasedRecommender
+RecommenderStrategyInterface <|.. CourseBasedRecommender
+
+
+RecommenderStrategyInterface ..> Context : uses
+
+RecommenderFactory --> RecommenderStrategyInterface : creates
+
+UserActivityObserver --> RecommenderStrategyInterface : observes
+
+CostFilterDecorator --> RecommenderStrategyInterface : decorates
+DifficultyFilterDecorator --> RecommenderStrategyInterface : decorates
+
+Strategies --> RecommenderStrategyInterface : contains
+HybridRecommender --> RecommenderStrategyInterface : implements
+
+EventManager --> Context : triggers
+
+RecommenderMemento --> RecommenderStrategyInterface : captures state
+
+@enduml

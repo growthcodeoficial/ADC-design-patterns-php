@@ -1,0 +1,15 @@
+@startuml Singleton
+    skinparam classAttributeIconSize 0
+
+    class President {
+        - static instance : President
+        ---
+        - President() : void
+        + static getInstance() : President
+    }
+    
+    note right: Singleton Instance\nPrivate constructor to prevent instantiation.
+    President ..> President
+
+@enduml
+

@@ -1,0 +1,43 @@
+@startuml FlyweightWithClient
+    skinparam classAttributeIconSize 0
+   
+    ' Interface (Flyweight)
+    interface ArtisticDrawing <<interface>> {
+        + render(string): string
+    }
+
+    ' Concrete Flyweight
+    class Square {
+        - color: string
+        + render(string): string
+    }
+
+    ' Unshared Concrete Flyweight
+    class UnsharedSquare {
+        - uniqueAttribute: string
+        + render(string): string
+    }
+
+    ' Flyweight Factory
+    class SquareFactory {
+        - squares: array
+        + getSquare(string): ArtisticDrawing
+    }
+
+    ' Client
+    class SquareClient {
+        - factory: SquareFactory
+        + drawSquares(): void
+    }
+
+    ' Relationships
+    ArtisticDrawing <|.. Square
+    ArtisticDrawing <|.. UnsharedSquare
+
+    SquareFactory *..> Square: creates
+    SquareFactory ..> ArtisticDrawing: returns
+
+    SquareClient .> SquareFactory: uses
+    SquareClient ..> Square: uses
+    SquareClient ..> UnsharedSquare: uses
+@enduml

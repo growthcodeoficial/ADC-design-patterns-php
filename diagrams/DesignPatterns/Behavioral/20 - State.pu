@@ -1,0 +1,26 @@
+@startuml State
+    skinparam classAttributeIconSize 0
+
+    class Context {
+        +request() : void
+        -state : State
+    }
+
+    interface State <<interface>> {
+        +handle(context : Context) : void
+    }
+
+    class ConcreteStateA {
+        +handle(context : Context) : void
+    }
+
+    class ConcreteStateB {
+        +handle(context : Context) : void
+    }
+
+    Context o- State : uses
+    State <|.. ConcreteStateA
+    State <|.. ConcreteStateB
+    note right of State : Encapsula comportamento associado ao estado
+    note right of Context : state.handle()
+@enduml

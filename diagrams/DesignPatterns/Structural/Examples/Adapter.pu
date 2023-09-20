@@ -1,0 +1,39 @@
+@startuml Adapter
+    skinparam classAttributeIconSize 0
+    
+    ' Interface for Translator
+    interface TranslatorInterface <<interface>> {
+        + translate(text: string, toLanguage: string) : string
+    }
+
+    ' Adaptees
+    class GoogleTranslate {
+        + translate(text: string, toLanguage: string) : string
+    }
+
+    class MicrosoftTranslate {
+        + translate(text: string, toLanguage: string) : string
+    }
+
+    ' Adapter Class
+    class UniversalTranslatorAdapter {
+        - translator: TranslatorInterface
+        ---
+        + translate(text: string, toLanguage: string) : string
+    }
+
+    ' Client Class
+    class TranslationService {
+        - translator: TranslatorInterface
+        ---
+        + requestTranslation(text: string, language: string): string
+    }
+
+    ' Relationships
+    TranslatorInterface <|.. UniversalTranslatorAdapter
+    UniversalTranslatorAdapter ..> GoogleTranslate : adapts >
+    UniversalTranslatorAdapter ..> MicrosoftTranslate : adapts >
+    TranslationService .> TranslatorInterface : uses >
+
+
+@enduml

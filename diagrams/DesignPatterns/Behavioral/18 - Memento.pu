@@ -1,0 +1,27 @@
+@startuml MementoComplete
+    skinparam classAttributeIconSize 0
+
+    class Originator {
+        -state : String
+        +createMemento() : Memento
+        +setMemento(memento : Memento) : void
+    }
+    
+    class Memento {
+        -state : String
+    }
+
+    class Caretaker {
+        -mementos : List<Memento>
+    }
+    
+    class Client {
+        +executeOperations() : void
+    }
+
+    Originator ..> Memento : creates
+    Caretaker o..> Memento : holds
+    Client -> Originator : uses
+    Client -> Caretaker : uses
+    note right of Memento : Armazena estado do Originator
+@enduml
